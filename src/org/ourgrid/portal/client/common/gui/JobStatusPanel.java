@@ -226,7 +226,7 @@ public class JobStatusPanel extends VerticalPanel {
 				String type = (String) model.get("type");
 				
 				if (type != null && type.equals(ResultTO.typeValue)) {
-					downloadActivation((ResultTO) model);
+					triggerDownload((ResultTO) model);
 				} else {
 					updateNodeDetails((String) model.get("description"));
 				}
@@ -305,7 +305,7 @@ public class JobStatusPanel extends VerticalPanel {
 		return getPagedTasksTO;
 	}
 
-	protected void downloadActivation(ResultTO resultTO) {
+	protected void triggerDownload(ResultTO resultTO) {
 		String link = GWT.getModuleBaseURL() + resultTO.getUrl();
 		com.google.gwt.user.client.Window.open(link, "", "");
 	}
@@ -339,7 +339,7 @@ public class JobStatusPanel extends VerticalPanel {
 			@Override
 			public void onFailure(Throwable caught) {
 				if (caught.getMessage().equals(JobSubmissionMessages.JOB_ALREADY_CANCELLED_MESSAGE)) {
-					habilityToClose();
+					setClosable();
 				}
 
 				MessageBox.alert("Cancel Job Error", caught.getMessage(), null);
@@ -347,7 +347,7 @@ public class JobStatusPanel extends VerticalPanel {
 
 			@Override
 			public void onSuccess(ResponseTO result) {
-				habilityToClose();
+				setClosable();
 
 				MessageBox.info("Job " + (tabCount+1), result.getMessage(), null);
 			}
@@ -356,7 +356,7 @@ public class JobStatusPanel extends VerticalPanel {
 
 	}
 	
-	protected void habilityToClose() {
+	protected void setClosable() {
 		container.setClosable(true);
 	}
 	
@@ -394,7 +394,7 @@ public class JobStatusPanel extends VerticalPanel {
 			updateStatusPanel(newJobStatus);
 		}
         if (!jobIsRunning(newJobStatus.getStatus())) {
-        	habilityToClose();
+        	setClosable();
         	
         	if (!jobEnded) {
         		OurGridPortal.refreshFileExplorerRoot();

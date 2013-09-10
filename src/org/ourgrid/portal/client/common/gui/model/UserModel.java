@@ -55,12 +55,10 @@ public class UserModel {
 
 	public List<Integer> getPagedTasksId(Integer jobId) {
 		List<Integer> requests = jobIdToPagedTaskId.get(jobId);
-		
 		if (requests != null) {
 			return requests;
 		}
-		
-		return  new LinkedList<Integer>();
+		return new LinkedList<Integer>();
 	}
 
 	public Integer getJobId(Integer index) {

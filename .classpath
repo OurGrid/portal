@@ -34,7 +34,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/marbs.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/epanetgrid2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cisternas.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/ourgrid-4.3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cog-jglobus-1.6.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gson-1.7.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.16.jar"/>
@@ -42,10 +41,11 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smack-3.2.1-b4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/smackx-3.2.1-b4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cisternasBalhid.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commune-1.2.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ourgrid-4.4.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="xlib/gwt-dev.jar" sourcepath="/home/tellesmvn/.m2/repository/com/google/gwt/gwt-dev/2.0.4/gwt-dev-2.0.4-sources.jar"/>
 	<classpathentry kind="lib" path="xlib/gwt-servlet.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commune-1.1.jar" sourcepath="/commune-pc"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

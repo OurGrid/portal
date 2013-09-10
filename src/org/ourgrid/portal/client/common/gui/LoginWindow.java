@@ -48,18 +48,15 @@ public class LoginWindow extends Window {
 		init();
 		
 		createLoginForm();
-		
 		createLoginField();
-        
 		createPasswordField();
-
         createSubmitButton();
-		
 		createRegisterUserButton();
-		
 		createRecoverPasswordButton();
 		
         this.add(formPanel);
+        
+        login.focus();
 	}
 
 	private void createPasswordField() {
