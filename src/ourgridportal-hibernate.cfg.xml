@@ -1,0 +1,50 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		
+		<!-- DERBY CONFIGURATION -->
+		<property name="hibernate.dialect">
+			org.hibernate.dialect.DerbyDialect
+		</property>
+		<property name="hibernate.connection.driver_class">
+			org.apache.derby.jdbc.EmbeddedDriver
+		</property>
+		<property name="hibernate.connection.url">
+			jdbc:derby:db/ourgridportal;create=true
+		</property>
+		<property name="hibernate.connection.username"></property>
+		<property name="hibernate.connection.password"></property>
+
+		<!-- CondiguraÃ§Ã£o do c3p0 -->
+		<property name="hibernate.c3p0.max_size">10</property>
+		<property name="hibernate.c3p0.min_size">2</property>
+		<property name="hibernate.c3p0.timeout">25000</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
+		<property name="hibernate.c3p0.acquire_increment">2</property>
+		
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		
+	    <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+		<!-- ConfiguraÃ§Ãµes de debug -->
+		<property name="show_sql">false</property>
+		<property name="hibernate.generate_statistics">true</property>
+		<property name="hibernate.use_sql_comments">true</property>
+		<!-- 
+		<property name="hbm2ddl.auto">create</property>
+ 		-->
+		<mapping class="org.ourgrid.portal.server.logic.model.persistance.User"/>
+		<!-- <mapping resource="Queries.xml"/> -->
+		
+	</session-factory>
+</hibernate-configuration>
