@@ -1,7 +1,6 @@
 package org.ourgrid.portal.server.logic.executors.common;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,14 +124,12 @@ public class FileExplorerExecutor extends AbstractExecutor {
 					if(list[i].isDirectory()){
 						hasChildren = hasChildren || true;
 						fileTO = new FileTO(list[i].getName(), location + list[i].getName() + File.separator, true);
-						String newDate = DateFormat.getInstance().format(new Date(list[i].lastModified()));
-						fileTO.setDate(newDate);
+						fileTO.setDate(new Date(list[i].lastModified()));
 						fileTO.setHasChildren(hasChildren(list[i]));
 						listFolders.add(fileTO);
 					}else{
-						String newDate = DateFormat.getInstance().format(new Date(list[i].lastModified()));
 						String size = formatSize(new Double(list[i].length()));
-						fileTO = new FileTO(list[i].getName(), size, newDate, location, false);
+						fileTO = new FileTO(list[i].getName(), size, new Date(list[i].lastModified()), location, false);
 						storageLength += list[i].length();
 						listFiles.add(fileTO);
 					}
@@ -141,11 +138,8 @@ public class FileExplorerExecutor extends AbstractExecutor {
 		}
 		
 		FileTO file = new FileTO(name, listFolders, location, isFolder);
-		
 		file.setListFiles(listFiles);
-		
-		String newDate = DateFormat.getInstance().format(new Date(date));
-		file.setDate(newDate);
+		file.setDate(new Date(date));
 		
 		file.setHasChildren(hasChildren);
 		return file;

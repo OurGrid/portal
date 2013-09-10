@@ -1,7 +1,6 @@
 package org.ourgrid.portal.server.logic.executors.common;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.util.Date;
 
 import org.ourgrid.portal.client.common.to.model.FileTO;
@@ -38,8 +37,7 @@ public class NewFolderExecutor extends AbstractExecutor {
 		String location = newFolderTO.getRoot().getLocation() + newFolderTO.getFile() + File.separator;
 		
 		FileTO fileTO = new FileTO(newDirectory.getName(), location, true);
-		String newDate = DateFormat.getInstance().format(new Date(newDirectory.lastModified()));
-		fileTO.setDate(newDate);
+		fileTO.setDate(new Date(newDirectory.lastModified()));
 		fileTO.setHasChildren(false);
 		
 		NewFolderResponseTO responseTO = new NewFolderResponseTO();

@@ -2,7 +2,6 @@ package org.ourgrid.portal.server.logic.executors.common;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -62,9 +61,9 @@ public class CompressFilesExecutor extends AbstractExecutor{
 				throw new ExecutionException(EMPTY_DIRECTORY);
 			}
 				
-			String newDate = DateFormat.getInstance().format(new Date(file.lastModified()));
 			String size = formatSize(new Double(file.length()));
-			FileTO fileTO = new FileTO(file.getName(), size, newDate, ((FileTO)extractedFileTO.getParent()).getLocation(), false);
+			FileTO fileTO = new FileTO(file.getName(), size, new Date(file.lastModified()), 
+					((FileTO)extractedFileTO.getParent()).getLocation(), false);
 			
 			CheckQuotaResponseTO checkQuotaResponseTO = null;
 			try {

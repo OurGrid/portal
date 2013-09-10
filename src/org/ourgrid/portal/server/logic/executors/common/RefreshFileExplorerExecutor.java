@@ -1,7 +1,6 @@
 package org.ourgrid.portal.server.logic.executors.common;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,13 +121,11 @@ public class RefreshFileExplorerExecutor extends AbstractExecutor {
 					FileTO fileTO;
 					if(list[i].isDirectory()){
 						fileTO = createFilesExplorer(list[i].getName(), list[i].lastModified(), list[i].listFiles(), location + list[i].getName() + File.separator, true);
-						String newDate = DateFormat.getInstance().format(new Date(list[i].lastModified()));
-						fileTO.setDate(newDate);
+						fileTO.setDate(new Date(list[i].lastModified()));
 						listFolders.add(fileTO);
 					}else{
-						String newDate = DateFormat.getInstance().format(new Date(list[i].lastModified()));
 						String size = formatSize(new Double(list[i].length()));
-						fileTO = new FileTO(list[i].getName(), size, newDate, location, false);
+						fileTO = new FileTO(list[i].getName(), size, new Date(list[i].lastModified()), location, false);
 						listFiles.add(fileTO);
 					}
 				}
@@ -139,8 +136,7 @@ public class RefreshFileExplorerExecutor extends AbstractExecutor {
 		
 		file.setListFiles(listFiles);
 		
-		String newDate = DateFormat.getInstance().format(new Date(date));
-		file.setDate(newDate);
+		file.setDate(new Date(date));
 		
 		file.setHasChildren(!listFolders.isEmpty());
 		

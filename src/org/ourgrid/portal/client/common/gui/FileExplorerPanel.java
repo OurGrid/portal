@@ -71,11 +71,14 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
   
 public class FileExplorerPanel extends LayoutContainer {  
   
+	private static DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
+	
 	private FileExplorerTreePanel fileExplorerTreePanel;
 	private TreeStore<FileTO> storeTreePanel;
 	private TreeStore<FileTO> storeGrid;
@@ -552,10 +555,11 @@ public class FileExplorerPanel extends LayoutContainer {
 	    ColumnConfig name = new ColumnConfig("name", "Name", 100);  
 	    name.setRenderer(new TreeGridCellRenderer<FileTO>());  
 	  
-	    ColumnConfig date = new ColumnConfig("size", "Size", 100);  
-	    ColumnConfig size = new ColumnConfig("date", "Date", 100);  
-	    ColumnModel cm = new ColumnModel(Arrays.asList(name, date, size));  
-	  
+	    ColumnConfig sizeColumn = new ColumnConfig("size", "Size", 100);  
+	    ColumnConfig dateColumn = new ColumnConfig("date", "Date", 100);
+	    dateColumn.setDateTimeFormat(DATE_FORMAT);
+	    ColumnModel cm = new ColumnModel(Arrays.asList(name, sizeColumn, dateColumn));  
+	    
 	    createStoreGrid(root.getChildren(), root.getListFiles());
 	    treeGrid = new TreeGrid<FileTO>(storeGrid, cm);  
 	    treeGrid.setAutoExpandColumn("name");  

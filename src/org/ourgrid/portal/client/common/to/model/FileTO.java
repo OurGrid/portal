@@ -2,6 +2,7 @@ package org.ourgrid.portal.client.common.to.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
@@ -50,7 +51,7 @@ public class FileTO extends BaseTreeModel implements Serializable {
 		}
   	}
 
-  	public FileTO(String name, String size, String date, String location, boolean isFolder) {
+  	public FileTO(String name, String size, Date date, String location, boolean isFolder) {
   		super();
   		set("expanded", true);
   		set("name", name);
@@ -72,11 +73,11 @@ public class FileTO extends BaseTreeModel implements Serializable {
 		return (String) get("size");
  	}
 
-	public String getDate() {
-    	return (String) get("date");
+	public Date getDate() {
+    	return (Date) get("date");
 	}
 	
-	public void setDate(String date) {
+	public void setDate(Date date) {
     	set("date", date);
 	}
 	

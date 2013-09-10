@@ -101,7 +101,8 @@
   <target name="build" depends="gwtc" description="Build this project" />
 
   <target name="war" depends="build" description="Create a war file">
-    <zip destfile="ourgridportal.war" basedir="war"/>
+    <mkdir dir="target"/>
+    <zip destfile="target/ourgridportal.war" basedir="war"/>
   </target>
 
   <target name="clean" description="Cleans this project">
