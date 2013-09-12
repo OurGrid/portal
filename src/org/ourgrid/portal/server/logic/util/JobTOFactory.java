@@ -12,12 +12,12 @@ import org.ourgrid.common.interfaces.to.GridProcessState;
 import org.ourgrid.common.specification.job.IOEntry;
 import org.ourgrid.portal.client.common.to.model.JobTO;
 import org.ourgrid.portal.client.common.to.model.ProcessTO;
-import org.ourgrid.portal.client.common.to.model.SuperTaskTO;
+import org.ourgrid.portal.client.common.to.model.TaskPageTO;
 import org.ourgrid.portal.client.common.to.model.TaskTO;
 
 public class JobTOFactory {
 
-	private static final Integer superTaskSize = 10;
+	private static final Integer TASK_PAGE_SIZE = 10;
 	
 	private static Integer num_processes;
 	private static Integer num_unstarted_tasks;
@@ -83,17 +83,17 @@ public class JobTOFactory {
 		while (offset < ourJob.getNumTasks()) {
 			ourJob.add(generateSuperTasksTO(ourJob, offset));
 			
-			offset += superTaskSize;
+			offset += TASK_PAGE_SIZE;
 		}
 		
 		return ourJob;
 	}
 	
-	private static SuperTaskTO generateSuperTasksTO(JobTO ourJob, Integer offset) {
+	private static TaskPageTO generateSuperTasksTO(JobTO ourJob, Integer offset) {
 		
-		SuperTaskTO superTaskTO = new SuperTaskTO();
+		TaskPageTO superTaskTO = new TaskPageTO();
 		superTaskTO.setFirstTaskId(offset);
-		superTaskTO.setLastTaskId(Math.min(offset + superTaskSize, ourJob.getNumTasks()));
+		superTaskTO.setLastTaskId(Math.min(offset + TASK_PAGE_SIZE, ourJob.getNumTasks()));
 		superTaskTO.setId(ourJob.getId() +  "." +  superTaskTO.getFirstTaskId());
 		superTaskTO.setName(superTaskTO.toString());
 		

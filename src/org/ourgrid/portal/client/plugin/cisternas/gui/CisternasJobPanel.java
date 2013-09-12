@@ -37,9 +37,7 @@ public class CisternasJobPanel extends PluginCreateJobPanel {
 		List<CisternasInputFileTO> inputs = new LinkedList<CisternasInputFileTO>();
 		inputs.add(cisternasRequest.getInputFile());
 		
-		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId, false, new LinkedList<CisternasInputFileTO>());
 	}

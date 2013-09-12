@@ -38,7 +38,6 @@ public class EpanetCreateJobPanel extends PluginCreateJobPanel{
 		input.add(epanetRequest.getInputFile());
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId, false, input);
 	}

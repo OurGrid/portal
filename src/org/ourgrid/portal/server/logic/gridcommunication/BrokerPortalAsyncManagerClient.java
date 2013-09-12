@@ -66,12 +66,8 @@ public class BrokerPortalAsyncManagerClient extends AsyncManagerClient<BrokerMan
 	@RecoveryNotification
 	public void controlIsUp(BrokerManager control) {
 		super.controlIsUp(control);
-		
 		getServiceManager().getLog().info("Broker Control is now UP");
-
-		if (getBrokerPortalAsyncApplicationClient().getModel().hasRunningJobs()) {
-			scheduleGetJobStatusAction();
-		}
+		scheduleGetJobStatusAction();
 	}
 	
 	@FailureNotification
@@ -80,7 +76,6 @@ public class BrokerPortalAsyncManagerClient extends AsyncManagerClient<BrokerMan
 
 		getServiceManager().getLog().info("Broker Control is now DOWN");
 		
-		stopGetJobStatusAction();
 		SyncContainerUtil.putResponseObject(
 				addJobBlockingQueue, new ControlOperationResult(new Exception(OurGridPortalServiceMessages.PORTAL_SERVICE_UNAVAIABLE_MSG)));
 		SyncContainerUtil.putResponseObject(
@@ -117,84 +112,17 @@ public class BrokerPortalAsyncManagerClient extends AsyncManagerClient<BrokerMan
 
 	}
 
-	public void reScheduleGetJobStatusAction() {
-		stopGetJobStatusAction();
-		scheduleGetJobStatusAction();
-	}
-	
-	public void reScheduleGetPagedTaskAction() {
-		stopGetPagedTaskAction();
-		scheduleGetPagedTaskAction();
-	}
-
-	private void stopGetJobStatusAction() {
-		getBrokerPortalAsyncApplicationClient().getModel().cancelJobStatusFuture();
-	}
-	
-	private void stopGetPagedTaskAction() {
-		getBrokerPortalAsyncApplicationClient().getModel().cancelPagedTaskFuture();
-	}
-	
-	private void scheduleGetPagedTaskAction() {
-		BrokerPortalAsyncApplicationClient applicationClient = getBrokerPortalAsyncApplicationClient();
-		BrokerPortalModel brokerPortalModel = applicationClient.getModel();
-		
-		getApplicationClient().addActionForRepetition(GET_PAGED_TASK_ACTION_NAME, new GetPagedTasksAction(
-				brokerPortalModel.getPagedTaskRequests()));
-
-		
-		if (brokerPortalModel.isPagedTaskFutureCancelled()) {
-			brokerPortalModel.setPagedTaskFuture(
-					applicationClient.scheduleActionWithFixedDelay(GET_PAGED_TASK_ACTION_NAME, 0, 
-							GET_PAGED_TASK_ACTION_DELAY, TimeUnit.SECONDS, null));
-		}
-	}
-
 	private void scheduleGetJobStatusAction() {
 		BrokerPortalAsyncApplicationClient applicationClient = getBrokerPortalAsyncApplicationClient();
-		BrokerPortalModel brokerPortalModel = applicationClient.getModel();
-		
-		List<Integer> activeJobIds = brokerPortalModel.getActiveJobIds();
-		getApplicationClient().addActionForRepetition(GET_JOB_STATUS_ACTION_NAME, new GetJobStatusAction(activeJobIds));
-		
-		if (brokerPortalModel.isJobStatusFutureCancelled()) {
-			brokerPortalModel.setJobStatusFuture(
-					applicationClient.scheduleActionWithFixedDelay(GET_JOB_STATUS_ACTION_NAME, 0, 
-							GET_JOB_STATUS_ACTION_DELAY, TimeUnit.SECONDS, null));
-		}
+		getApplicationClient().addActionForRepetition(GET_JOB_STATUS_ACTION_NAME, 
+				new GetJobStatusAction());
+		applicationClient.scheduleActionWithFixedDelay(GET_JOB_STATUS_ACTION_NAME, 0, 
+				GET_JOB_STATUS_ACTION_DELAY, TimeUnit.SECONDS, null);
 	}
 
 	public void hereIsCompleteJobsStatus(ServiceID statusProviderServiceID,
 			JobsPackage jobsStatus) {
 		
-	}
-
-	private void updateGetJobStatusAction() {
-		
-		boolean closeJobs = getBrokerPortalAsyncApplicationClient().getModel().closeFinishedJobs();
-
-		if (getBrokerPortalAsyncApplicationClient().getModel().hasRunningJobs()) {
-			if (closeJobs) {
-				reScheduleGetJobStatusAction();
-			}
-		} else {
-			stopGetJobStatusAction();
-		}
-	}
-	
-	private void updateGetPagedTasksAction(Integer jobId) {
-		
-		BrokerPortalModel model = getBrokerPortalAsyncApplicationClient().getModel();
-		
-		if (model.isJobFinished(jobId)) {
-			model.removeRequestedPagedTasks(jobId);
-			
-			if (model.hasPagedTaskRequest()) {
-				reScheduleGetPagedTaskAction();
-			} else {
-				stopGetPagedTaskAction();
-			}
-		}
 	}
 
 	private void callJobStatusListeners(JobsPackage jobsStatus) {
@@ -206,6 +134,20 @@ public class BrokerPortalAsyncManagerClient extends AsyncManagerClient<BrokerMan
 		}
 	}
 	
+	public void hereIsJobsStatus(ServiceID statusProviderServiceID,
+			JobsPackage jobsStatus) {
+		try {
+			callJobStatusListeners(jobsStatus);
+		} catch (Throwable e) {
+			getServiceManager().getLog().debug("Error cause : " + e.getMessage());
+		}
+	}
+
+	public void hereIsPagedTasks(ServiceID serviceID, Integer jobId,
+			Integer offset, List<TaskStatusInfo> pagedTasks) {
+		callJobStatusListeners(offset, pagedTasks);
+	}
+
 	private void callJobStatusListeners(Integer offset, List<TaskStatusInfo> pagedTasks) {
 		BrokerPortalModel model = getBrokerPortalAsyncApplicationClient().getModel();
 		List<JobStatusUpdateListener> jobStatusListeners = model.getJobStatusListeners();
@@ -214,26 +156,4 @@ public class BrokerPortalAsyncManagerClient extends AsyncManagerClient<BrokerMan
 			jobStatusListener.hereIsPagedTasks(offset, pagedTasks);
 		}		
 	}
-
-	public void hereIsJobsStatus(ServiceID statusProviderServiceID,
-			JobsPackage jobsStatus) {
-		
-		try {
-			callJobStatusListeners(jobsStatus);
-		} catch (Throwable e) {
-			getServiceManager().getLog().debug("Error cause : " + e.getMessage());
-		}
-
-		updateGetJobStatusAction();
-	}
-
-	public void hereIsPagedTasks(ServiceID serviceID, Integer jobId,
-			Integer offset, List<TaskStatusInfo> pagedTasks) {
-		
-		callJobStatusListeners(offset, pagedTasks);
-		
-		updateGetPagedTasksAction(jobId);
-	}
-
-
 }

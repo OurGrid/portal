@@ -196,7 +196,6 @@ public class JobSubmissionPanel extends LayoutContainer {
 		int nextJobViewId = getNextJobViewId();
 		
 		userModel.addJobId(nextJobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		TabItem tab = createAndAddJobStatusTab(nextJobViewId);
 		tab.setClosable(false);
@@ -257,7 +256,6 @@ public class JobSubmissionPanel extends LayoutContainer {
 			int jobID = request.getJobID();
 			
 			userModel.addJobId(jobViewId, jobID);
-			userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 			tabs.add(createAndAddJobStatusTab(jobViewId));
 		}
 	}

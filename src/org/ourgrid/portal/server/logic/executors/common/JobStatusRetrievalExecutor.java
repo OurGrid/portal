@@ -26,7 +26,7 @@ public class JobStatusRetrievalExecutor extends AbstractExecutor {
 			throw new ExecutionException("Error while trying to retrieve status of a job with null id.");
 		}
 		
-		JobTO jobStatus = getPortal().getBrokerPortalClient().getModel().getStatus(jobId, jobStatusTO.getPagedTasksIds());
+		JobTO jobStatus = getPortal().getBrokerPortalClient().getModel().getStatus(jobId, jobStatusTO.getPagesFirstTaskIds());
 		
 		if (jobStatus == null) {
 			throw new ExecutionException("Error while trying to retrieve job [" + jobId + "] status.");
@@ -45,6 +45,7 @@ public class JobStatusRetrievalExecutor extends AbstractExecutor {
 		
 		getLogger().info("Executor Name: Job Status Retrieval" + LINE_SEPARATOR + 
 				"Parameters: "  + LINE_SEPARATOR + 
-				" JobId: " + jobStatusTO.getJobId());
+				" JobId: " + jobStatusTO.getJobId() + 
+				" First Task ids: " + jobStatusTO.getPagesFirstTaskIds());
 	}
 }

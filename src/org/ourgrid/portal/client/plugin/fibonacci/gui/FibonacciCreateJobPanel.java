@@ -35,7 +35,6 @@ public class FibonacciCreateJobPanel extends PluginCreateJobPanel {
 		FibonacciJobRequest fibRequest = (FibonacciJobRequest) request;
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId, false, new LinkedList<Object>());
 	}

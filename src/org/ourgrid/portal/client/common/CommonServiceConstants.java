@@ -54,8 +54,6 @@ public class CommonServiceConstants {
 	
 	public static final String JOB_STATUS_RETRIEVAL_EXECUTOR = "JobStatusRetrievalExecutor";
 	
-	public static final String GET_PAGED_TASKS_EXECUTOR = "GetPagedTasksExecutor";
-	
 	public static final String DELETE_JOB_EXECUTOR = "DeleteJobExecutor";
 	
 	public static final String FILE_EXPLORER_EXECUTOR = "FileExplorerExecutor";

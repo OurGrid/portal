@@ -22,11 +22,11 @@ public class JobStatusRetrievalTO extends ServiceTO {
 		this.jobId = jobId;
 	}
 
-	public List<Integer> getPagedTasksIds() {
+	public List<Integer> getPagesFirstTaskIds() {
 		return tasksIds;
 	}
 
-	public void setPagedTasksIds(List<Integer> tasksIds) {
+	public void setPagesFirstTaskIds(List<Integer> tasksIds) {
 		this.tasksIds = tasksIds;
 	}
 	

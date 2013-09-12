@@ -103,7 +103,7 @@ public abstract class AbstractRequest implements Serializable, Comparable<Abstra
 		return true;
 	}
 
-	public void desactivateNotification() {
+	public void deactivateNotification() {
 		setEmailNotification(false);
 	}
 

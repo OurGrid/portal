@@ -1,5 +1,7 @@
 package org.ourgrid.portal.client.common.actions;
 
+import java.util.ArrayList;
+
 import org.ourgrid.portal.client.OurGridPortal;
 import org.ourgrid.portal.client.common.CommonServiceConstants;
 import org.ourgrid.portal.client.common.gui.JobStatusPanel;
@@ -46,7 +48,7 @@ public class GetJobStatusAction {
 		jobStatusTO.setJobId(jobId);
 		
 		UserModel userModel = OurGridPortal.getUserModel();
-		jobStatusTO.setPagedTasksIds(userModel.getPagedTasksId(jobId));
+		jobStatusTO.setPagesFirstTaskIds(new ArrayList<Integer>(userModel.getPagesFirstTaskIds(jobId)));
 		
 		OurGridPortalServerUtil.getInstance().execute(jobStatusTO, new AsyncCallback<JobStatusRetrievalResponseTO>() {
 

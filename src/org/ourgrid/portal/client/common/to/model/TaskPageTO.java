@@ -6,47 +6,46 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 
-public class SuperTaskTO extends AbstractTreeNodeTO implements Serializable  {
+public class TaskPageTO extends AbstractTreeNodeTO implements Serializable  {
 
 	private static final long serialVersionUID = -8472440531517374465L;
 	
 	private static final String firstTaskId = "firstTaskId";
 	private static final String lastTaskId = "lastTaskId";
-	public static final String typeValue = "SuperTaskTO";
+	public static final String typeValue = "TaskPageTO";
 	public static final String id = "id";
 	
-	public SuperTaskTO() {
+	public TaskPageTO() {
 		super();
 		setType(typeValue);
 		setDescription("");
 	}
 
 	public Integer getFirstTaskId() {
-		return get(SuperTaskTO.firstTaskId);
+		return get(TaskPageTO.firstTaskId);
 	}
 	
 	public Integer getLastTaskId() {
-		return get(SuperTaskTO.lastTaskId);
+		return get(TaskPageTO.lastTaskId);
 	}
 	
 	public String getId() {
-		return get(SuperTaskTO.id);
+		return get(TaskPageTO.id);
 	}
 	
 	public void setFirstTaskId(Integer firstTaskId) {
-		set(SuperTaskTO.firstTaskId, firstTaskId);
+		set(TaskPageTO.firstTaskId, firstTaskId);
 	}
 	
 	public void setLastTaskId(Integer lastTaskId) {
-		set(SuperTaskTO.lastTaskId, lastTaskId);
+		set(TaskPageTO.lastTaskId, lastTaskId);
 	}
 	
 	public void setId(String id) {
-		set(SuperTaskTO.id, id);
+		set(TaskPageTO.id, id);
 	}
 	
 	public void setTasks(List<TaskTO> tasks) {
-		
 		for (TaskTO taskTO : tasks) {
 			add(taskTO);
 		}
@@ -60,8 +59,8 @@ public class SuperTaskTO extends AbstractTreeNodeTO implements Serializable  {
 		return getChildren();
 	}
 	
-	public SuperTaskTO clone() {
-		SuperTaskTO copySuperTaskTO = new SuperTaskTO();
+	public TaskPageTO clone() {
+		TaskPageTO copySuperTaskTO = new TaskPageTO();
 		copySuperTaskTO.setProperties(new HashMap<String, Object>(this.getProperties()));
 		return copySuperTaskTO;
 	}

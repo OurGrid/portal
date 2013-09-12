@@ -37,7 +37,6 @@ public class ReservatoriosJobPanel extends PluginCreateJobPanel {
 		input.add(reservatoriosRequest.getInputFile());
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId, false, input);
 	}

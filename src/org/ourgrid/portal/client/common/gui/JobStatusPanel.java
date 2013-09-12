@@ -13,10 +13,9 @@ import org.ourgrid.portal.client.common.image.JobStatusTreeIcons;
 import org.ourgrid.portal.client.common.to.model.AbstractTreeNodeTO;
 import org.ourgrid.portal.client.common.to.model.JobTO;
 import org.ourgrid.portal.client.common.to.model.ResultTO;
-import org.ourgrid.portal.client.common.to.model.SuperTaskTO;
+import org.ourgrid.portal.client.common.to.model.TaskPageTO;
 import org.ourgrid.portal.client.common.to.response.ResponseTO;
 import org.ourgrid.portal.client.common.to.service.CancelJobTO;
-import org.ourgrid.portal.client.common.to.service.RequestPagedTasksTO;
 import org.ourgrid.portal.client.common.util.JobSubmissionMessages;
 import org.ourgrid.portal.client.common.util.OurGridPortalServerUtil;
 
@@ -154,7 +153,7 @@ public class JobStatusPanel extends VerticalPanel {
 			public boolean hasChildren(AbstractTreeNodeTO parent) {  
 				
 				String type = parent.getType();
-				if (!type.equals(SuperTaskTO.typeValue)) {
+				if (!type.equals(TaskPageTO.typeValue)) {
 					return !parent.isLeaf();
 				}
 				
@@ -181,7 +180,7 @@ public class JobStatusPanel extends VerticalPanel {
 		          
 		          if (type.equals(ResultTO.typeValue)) {
 		        	  return ICONS.download();
-		          } else if (type.equals(SuperTaskTO.typeValue)) {
+		          } else if (type.equals(TaskPageTO.typeValue)) {
 		        	  
 		        	  if (jobStatusTreePanel.isExpanded(model) && model.getChildCount() == 0) {
 		        		  AbstractImagePrototype loading = ICONS.loading();
@@ -239,72 +238,17 @@ public class JobStatusPanel extends VerticalPanel {
 				ModelData model = be.getNode().getModel();
 				String type = (String) model.get("type");
 				
-				if (type != null && type.equals(SuperTaskTO.typeValue)){
-					addRequestPagedTask((SuperTaskTO) model);
+				if (type != null && type.equals(TaskPageTO.typeValue)){
+					UserModel userModel = OurGridPortal.getUserModel();
+					userModel.addTaskPage(getJobId(), ((TaskPageTO) model).getFirstTaskId());
 				}
 			}
 			
 		});
 		
-		jobStatusTreePanel.addListener(Events.Collapse, new Listener<TreePanelEvent<AbstractTreeNodeTO>>() {
-
-			public void handleEvent(TreePanelEvent<AbstractTreeNodeTO> be) {
-				ModelData model = be.getNode().getModel();
-				String type = (String) model.get("type");
-				
-				if (type != null && type.equals(SuperTaskTO.typeValue)){
-					removeRequestPagedTask((SuperTaskTO) model);
-				}
-			}
-		});
-		
 	    jobStatusContainer.add(jobStatusTreePanel);
 	}
 	
-	protected void removeRequestPagedTask(SuperTaskTO model) {
-			OurGridPortal.getUserModel().removePagedTaskRequest(getJobId(), model.getFirstTaskId());
-	}
-
-	protected void addRequestPagedTask(SuperTaskTO superTaskTO) {
-		
-		Integer pagedTaskId = superTaskTO.getFirstTaskId();
-
-		if (!isActiveSuperTask(getJobId(), pagedTaskId)) {
-			requestPagedTasks(superTaskTO);
-		}
-		
-	}
-
-	protected void addPagedTaskId(Integer jobId, Integer pagedTaskId) {
-		OurGridPortal.getUserModel().addPagedTaskRequest(jobId, pagedTaskId);
-	}
-	
-	protected void requestPagedTasks(final SuperTaskTO model) {
-
-		RequestPagedTasksTO getPagedTasksTO = createGetPagedTasksTO(getJobId(),	model.getFirstTaskId(), model.getLastTaskId());
-
-		OurGridPortalServerUtil.getInstance().execute(getPagedTasksTO, new AsyncCallback<ResponseTO>() {
-
-			public void onFailure(Throwable arg0) {}
-
-			public void onSuccess(ResponseTO arg0) {
-				addPagedTaskId(getJobId(), model.getFirstTaskId());	
-			}
-
-		});
-		
-	}
-	
-	private RequestPagedTasksTO createGetPagedTasksTO(Integer jobId, Integer offset, Integer pageSize) {
-		RequestPagedTasksTO getPagedTasksTO = new RequestPagedTasksTO();
-		getPagedTasksTO.setExecutorName(CommonServiceConstants.GET_PAGED_TASKS_EXECUTOR);
-		getPagedTasksTO.setJobId(jobId);
-		getPagedTasksTO.setOffset(offset);
-		getPagedTasksTO.setLastTaskId(pageSize);
-		
-		return getPagedTasksTO;
-	}
-
 	protected void triggerDownload(ResultTO resultTO) {
 		String link = GWT.getModuleBaseURL() + resultTO.getUrl();
 		com.google.gwt.user.client.Window.open(link, "", "");
@@ -364,10 +308,6 @@ public class JobStatusPanel extends VerticalPanel {
 		return OurGridPortal.getUserModel().getJobId(jobViewId);
 	}
 	
-	private boolean isActiveSuperTask(Integer jobId, Integer taskId) {
-		return OurGridPortal.getUserModel().containsPagedTaskId(jobId, taskId);
-	}
-	
 	private CancelJobTO createCancelJobTO(Integer jobId) {
 		CancelJobTO cancelJobTO = new CancelJobTO();
 		cancelJobTO.setExecutorName(CommonServiceConstants.CANCEL_JOB_EXECUTOR);
@@ -379,12 +319,6 @@ public class JobStatusPanel extends VerticalPanel {
 		GetJobStatusAction action = new GetJobStatusAction(getJobId(), this);
 		action.runAction();
 		getJobStatusTimer = action.scheduleUpdateTimer();
-
-	}
-	
-	public void scheduleJobDescriptionAction() {
-		GetJobStatusAction action = new GetJobStatusAction(getJobId(), this);
-		action.runAction();
 	}
 	
 	public void updateJobStatus(JobTO newJobStatus) {
@@ -421,23 +355,29 @@ public class JobStatusPanel extends VerticalPanel {
 
 		TreeStore<AbstractTreeNodeTO> store = jobStatusTreePanel.getStore();
 
+		JobTO oldJobTO = null;
+		if (!store.getModels().isEmpty()) {
+			oldJobTO = (JobTO) store.getModels().iterator().next();
+		}
+		
 		store.removeAll();
 		store.add(newJobStatus, true);
-
+		
+		if (oldJobTO == null) {
+			return;
+		}
+		
 		List<ModelData> children = newJobStatus.getChildren();
 
-		UserModel userModel = OurGridPortal.getUserModel();
 		for (ModelData modelData : children) {
-
-			SuperTaskTO superTaskTO = (SuperTaskTO) modelData;
-
-			if (userModel.containsPagedTaskId(getJobId(), superTaskTO.getFirstTaskId())) {
-				jobStatusTreePanel.setExpanded(superTaskTO, true, true);
+			TaskPageTO newTaskPage = (TaskPageTO) modelData;
+			TaskPageTO oldTaskPage = oldJobTO.getTaskPage(newTaskPage.getFirstTaskId());
+			if (oldTaskPage != null) {
+				newTaskPage.setExpanded(oldTaskPage.isExpanded());
+				jobStatusTreePanel.setExpanded(newTaskPage, oldTaskPage.isExpanded());
 			}
 		}
-		jobStatusTreePanel.setExpanded(newJobStatus, true);
-
-		
+		jobStatusTreePanel.setExpanded(newJobStatus, oldJobTO.isExpanded());
 	}
 	
 	private boolean jobIsRunning(String state) {

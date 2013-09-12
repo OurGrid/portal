@@ -17,6 +17,7 @@ import org.ourgrid.portal.client.common.to.model.JobTO;
 import org.ourgrid.portal.client.common.to.model.ProcessTO;
 import org.ourgrid.portal.client.common.to.model.ResultTO;
 import org.ourgrid.portal.client.common.to.model.TaskTO;
+import org.ourgrid.portal.server.logic.gridcommunication.BrokerPortalAsyncApplicationClient;
 import org.ourgrid.portal.server.logic.gridcommunication.BrokerPortalModel;
 import org.ourgrid.portal.server.logic.interfaces.JobStatusUpdateListener;
 import org.ourgrid.portal.server.logic.interfaces.OurGridPortalIF;
@@ -52,37 +53,37 @@ public class JobStatusHandler implements JobStatusUpdateListener {
 			
 			if (jobInfo != null && request != null){
 				
-				JobTO jobTO =	getJobTO(jobInfo.getJobId());
+				JobTO oldJobTO = getJobTO(jobInfo.getJobId());
 				JobTO newJobTO = null;
 				
-				if (jobTO == null || jobIsRunning(jobTO.getStatus())) {
+				if (oldJobTO == null || isRunning(oldJobTO.getStatus())) {
 					newJobTO = JobTOFactory.generateJobTO(jobInfo);
 					getBrokerPortalModel().updateJobTO(newJobTO);
+					BrokerPortalAsyncApplicationClient client = portal.getBrokerPortalClient();
+					client.getPagedTasks(jobId, 0, newJobTO.getNumTasks());
 				} else {
-					newJobTO = jobTO;
+					newJobTO = oldJobTO;
 				}
-				
 				
 				if (verifyJobFinished(newJobTO)) {
 					if (request.isEmailNotification()) {
 						sendJobFinishedEmail(request, newJobTO);
-						request.desactivateNotification();
+						request.deactivateNotification();
 					}
 				}
 				
-				if (verifyJobIsCancelled(newJobTO)) {
+				if (isCancelled(newJobTO)) {
 					getBrokerPortalModel().removeActiveJobId(newJobTO.getId());
 				}
-				
 			}
 		}
 	}
 
-	private boolean verifyJobIsCancelled(JobTO newJobTO) {
+	private boolean isCancelled(JobTO newJobTO) {
 		return newJobTO.getStatus().equals(StateConstants.CANCELLED.toString());
 	}
 
-	private boolean jobIsRunning(String state) {
+	private boolean isRunning(String state) {
 		return state.equals(StateConstants.UNSTARTED.toString()) || 
 			state.equals(StateConstants.RUNNING.toString());
 	}
@@ -172,7 +173,6 @@ public class JobStatusHandler implements JobStatusUpdateListener {
 		for (TaskStatusInfo taskStatusInfo : pagedTasks) {
 			TaskTO taskTO = JobTOFactory.generateTaskTO(taskStatusInfo);
 			jobId = taskTO.getJobId();
-			
 			if (taskTO.getStatus().equals(GridProcessState.FINISHED.toString())) {
 				addResults(taskTO, jobId);
 			}

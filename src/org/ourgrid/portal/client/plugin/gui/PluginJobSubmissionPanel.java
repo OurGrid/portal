@@ -110,7 +110,6 @@ public abstract class PluginJobSubmissionPanel extends LayoutContainer {
 		UserModel userModel = OurGridPortal.getUserModel();
 		for (Integer integer : jobID) {
 			userModel.addJobId(getJobViewId(), integer);
-			userModel.setPagedTaskIds(integer, new LinkedList<Integer>());
 		}
 		
 	}

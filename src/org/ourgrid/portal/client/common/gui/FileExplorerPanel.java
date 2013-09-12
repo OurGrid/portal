@@ -1281,7 +1281,6 @@ public class FileExplorerPanel extends LayoutContainer {
 		int nextJobViewId = getNextJobViewId();
 		
 		userModel.addJobId(nextJobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		OurGridPortal.createAndAddJobStatusTab(nextJobViewId);
 	}

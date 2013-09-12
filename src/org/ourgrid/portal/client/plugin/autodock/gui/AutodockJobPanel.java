@@ -36,7 +36,6 @@ public class AutodockJobPanel extends PluginCreateJobPanel {
 		AutodockJobRequest autodockRequest = (AutodockJobRequest) request;
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		List<AutodockInputFileTO> inputs = new LinkedList<AutodockInputFileTO>();
 		inputs.add(autodockRequest.getMacromoleculeRigidModel());

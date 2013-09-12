@@ -217,9 +217,8 @@ public class JobTO extends AbstractTreeNodeTO implements Serializable  {
 		setDescription(description);
 	}
 	
-	public void setTasks(List<SuperTaskTO> superTasks) {
-		
-		for (SuperTaskTO taskTO : superTasks) {
+	public void setTasks(List<TaskPageTO> superTasks) {
+		for (TaskPageTO taskTO : superTasks) {
 			add(taskTO);
 		}
 	}
@@ -228,15 +227,12 @@ public class JobTO extends AbstractTreeNodeTO implements Serializable  {
 		return "Job " + this.getRelativeId() + " : " + this.getLabel() + " [ " + this.getStatus() + " ]";
 	}
 
-	public List<ModelData> getSuperTasks() {
-		return getChildren();
-	}
-
-	public SuperTaskTO getSuperTaskTO(Integer offset) {
-		for (ModelData child : getSuperTasks()) {
-			SuperTaskTO superTaskTO = (SuperTaskTO) child;
-			
-			if (superTaskTO.getFirstTaskId().equals(offset)) return superTaskTO;
+	public TaskPageTO getTaskPage(Integer offset) {
+		for (ModelData child : getChildren()) {
+			TaskPageTO superTaskTO = (TaskPageTO) child;
+			if (superTaskTO.getFirstTaskId().equals(offset)) {
+				return superTaskTO;
+			}
 		}
 		return null;
 	}

@@ -35,7 +35,6 @@ public class LvcJobPanel extends PluginCreateJobPanel {
 		LvcJobRequest lvcRequest = (LvcJobRequest) request;
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId, false, new LinkedList<Object>());
 	}

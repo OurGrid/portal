@@ -97,7 +97,7 @@ public abstract class JobSubmissionExecutor extends AbstractExecutor{
 	}
 	
 	public void reeschedule() {
-		brokerPortalClient.getManagerClient().reScheduleGetJobStatusAction();
+//		brokerPortalClient.getManagerClient().reScheduleGetJobStatusAction();
 	}
 	
 }

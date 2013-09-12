@@ -22,13 +22,12 @@ import org.ourgrid.portal.server.logic.executors.common.ForcedCancelJobExecutor;
 import org.ourgrid.portal.server.logic.executors.common.GetJobsUploadedNameExecutor;
 import org.ourgrid.portal.server.logic.executors.common.JdfCompilationExecutor;
 import org.ourgrid.portal.server.logic.executors.common.JobStatusRetrievalExecutor;
-import org.ourgrid.portal.server.logic.executors.common.OurGridJobSubmissionExecutor;
 import org.ourgrid.portal.server.logic.executors.common.NewFolderExecutor;
+import org.ourgrid.portal.server.logic.executors.common.OurGridJobSubmissionExecutor;
 import org.ourgrid.portal.server.logic.executors.common.PasteFileExecutor;
 import org.ourgrid.portal.server.logic.executors.common.RefreshFileExplorerExecutor;
 import org.ourgrid.portal.server.logic.executors.common.RemoveUserExecutor;
 import org.ourgrid.portal.server.logic.executors.common.RenameFileExecutor;
-import org.ourgrid.portal.server.logic.executors.common.RequestPagedTasksExecutor;
 import org.ourgrid.portal.server.logic.executors.common.UploadSessionIDExecutor;
 import org.ourgrid.portal.server.logic.executors.common.UserApprovalExecutor;
 import org.ourgrid.portal.server.logic.executors.common.UserLoginExecutor;
@@ -84,8 +83,9 @@ public class ExecutorManager {
 		addExecutor(CommonServiceConstants.JOB_SUBMISSION_EXECUTOR, new OurGridJobSubmissionExecutor(portal));
 		addExecutor(CommonServiceConstants.CANCEL_JOB_EXECUTOR, new CancelJobExecutor(portal));
 		addExecutor(CommonServiceConstants.FORCED_CANCEL_JOB_EXECUTOR, new ForcedCancelJobExecutor(portal));
+		
 		addExecutor(CommonServiceConstants.JOB_STATUS_RETRIEVAL_EXECUTOR, new JobStatusRetrievalExecutor(portal));
-		addExecutor(CommonServiceConstants.GET_PAGED_TASKS_EXECUTOR, new RequestPagedTasksExecutor(portal));
+		
 		addExecutor(CommonServiceConstants.DELETE_JOB_EXECUTOR, new DeleteJobExecutor(portal));
 		addExecutor(CommonServiceConstants.BLENDER_JOB_SUBMISSION_EXECUTOR, new BlenderJobSubmissionExecutor(portal));
 		addExecutor(CommonServiceConstants.GENECODIS_SEND_INPUT_EXECUTOR, new GenecodisSendInputExecutor(portal));

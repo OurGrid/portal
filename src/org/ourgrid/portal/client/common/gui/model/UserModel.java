@@ -1,10 +1,10 @@
 package org.ourgrid.portal.client.common.gui.model;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class UserModel {
 	
@@ -13,18 +13,19 @@ public class UserModel {
 	private String userLogin;
 	
 	private Map<Integer, Integer> relativeIdToJobId;
+	private Map<Integer, Set<Integer>> pagesFirstTaskIdPerJob;
 	
-	private Map<Integer, List<Integer>> jobIdToPagedTaskId;
-
-	public UserModel(String login, Long uploadSessionId, Map<Integer, Integer> relativeIdToJobId, Map<Integer, List<Integer>> jobIdToPagedTasksId) {
+	public UserModel(String login, Long uploadSessionId, Map<Integer, Integer> relativeIdToJobId, 
+			Map<Integer, Set<Integer>> pagesFirstTaskIdPerJob) {
 		this.userLogin = login;
 		this.relativeIdToJobId = relativeIdToJobId;
 		this.uploadSessionId = uploadSessionId;
-		this.jobIdToPagedTaskId = jobIdToPagedTasksId;
+		this.pagesFirstTaskIdPerJob = pagesFirstTaskIdPerJob;
 	}
 
 	public UserModel(String login) {
-		this(login, 0L, new HashMap<Integer, Integer>(), new HashMap<Integer, List<Integer>>());
+		this(login, 0L, new HashMap<Integer, Integer>(), 
+				new HashMap<Integer, Set<Integer>>());
 	}
 
 	public UserModel() {
@@ -53,41 +54,29 @@ public class UserModel {
 		this.uploadSessionId = uploadSessionId;
 	}
 
-	public List<Integer> getPagedTasksId(Integer jobId) {
-		List<Integer> requests = jobIdToPagedTaskId.get(jobId);
-		if (requests != null) {
-			return requests;
-		}
-		return new LinkedList<Integer>();
-	}
-
 	public Integer getJobId(Integer index) {
 		return this.relativeIdToJobId.get(index);
 	}
 
-	public void addPagedTaskRequest(Integer jobId, Integer taskId) {
-		getPagedTasksId(jobId).add(taskId);
+	public void removeJobId(Integer index) {
+		Integer jobId = this.relativeIdToJobId.remove(index);
+		if (jobId != null) {
+			this.pagesFirstTaskIdPerJob.remove(jobId);
+		}
 	}
 	
-	public void setPagedTaskIds(Integer jobId, List<Integer> requests) {
-		jobIdToPagedTaskId.put(jobId, requests);
-	}
-
-	public void removeJobId(Integer index) {
-		this.relativeIdToJobId.remove(index);
+	public void addTaskPage(Integer jobId, Integer taskPageFirstTaskId) {
+		Set<Integer> pageSet = pagesFirstTaskIdPerJob.get(jobId);
+		pageSet.add(taskPageFirstTaskId);
 	}
 
 	public void addJobId(Integer jobTabIndex, Integer jobId) {
-			this.relativeIdToJobId.put(jobTabIndex, jobId);
+		this.relativeIdToJobId.put(jobTabIndex, jobId);
+		this.pagesFirstTaskIdPerJob.put(jobId, new HashSet<Integer>());
 	}
 
-	public boolean containsPagedTaskId(Integer jobId, Integer taskId) {
-		List<Integer> requests = getPagedTasksId(jobId);
-		return requests.contains(taskId) ;
+	public Collection<? extends Integer> getPagesFirstTaskIds(Integer jobId) {
+		return pagesFirstTaskIdPerJob.get(jobId);
 	}
 
-	public void removePagedTaskRequest(Integer jobId, Integer firstTaskId) {
-		getPagedTasksId(jobId).remove(firstTaskId);
-	}
-	
 }

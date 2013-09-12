@@ -33,7 +33,6 @@ public class GenecodisJobPanel extends PluginCreateJobPanel {
 		GenecodisJobRequest genecodisRequest = (GenecodisJobRequest) request;
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId, false, genecodisRequest.getInputFiles());
 	}

@@ -35,7 +35,6 @@ public class BlenderJobPanel extends PluginCreateJobPanel {
 		BlenderJobRequest blenderRequest = (BlenderJobRequest) request;
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId,false,blenderRequest.getInputFiles());
 	}

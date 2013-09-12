@@ -39,7 +39,6 @@ public class MarbsCreateJobPanel extends PluginCreateJobPanel{
 		input.add(marbsRequest.getInputFile());
 		
 		userModel.addJobId(jobViewId, jobID);
-		userModel.setPagedTaskIds(jobID, new LinkedList<Integer>());
 		
 		return addTabJob(jobViewId, false, input);
 	}
