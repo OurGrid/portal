@@ -33,11 +33,9 @@ public class GetJobStatusAction {
 	
 	private Timer createUpdateTask() {
 		return new Timer() {
-			
 			public void run() {
 				runAction();
 			}
-			
 		};
 	}
 	

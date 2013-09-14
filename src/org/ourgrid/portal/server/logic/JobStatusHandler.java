@@ -148,6 +148,7 @@ public class JobStatusHandler implements JobStatusUpdateListener {
 		for (File file : resultFiles){
 
 			ResultTO resultTO = new ResultTO();
+			resultTO.setId(resultTO.toString());
 			resultTO.setText(file.getName());
 			resultTO.setUrl("download?" + DownloadServlet.FILE_NAME_PARAMETER + "=" + file.getName() + "&" + DownloadServlet.FILE_LOCATION +"=" + 
 					parseLocation(file.getParentFile().getAbsolutePath()));

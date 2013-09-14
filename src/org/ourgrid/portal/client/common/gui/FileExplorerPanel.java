@@ -1296,6 +1296,7 @@ public class FileExplorerPanel extends LayoutContainer {
 	protected void downloadActivation(FileTO fileTO) {
 		
 		ResultTO resultTO = new ResultTO();
+		resultTO.setId(resultTO.toString());
 		resultTO.setText(fileTO.getName());
 		resultTO.setUrl("download?filename=" + fileTO.getName() + "&location=" + this.location.getValue());
 		resultTO.setName(resultTO.toString());

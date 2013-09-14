@@ -27,8 +27,6 @@
 	<classpathentry kind="lib" path="xlib/selenium-java-client-driver-tests.jar"/>
 	<classpathentry kind="lib" path="xlib/selenium-java-client-driver.jar"/>
 	<classpathentry kind="lib" path="xlib/selenium-server-tests.jar"/>
-	<classpathentry kind="lib" path="xlib/selenium-server.jar"/>
-	<classpathentry kind="lib" path="xlib/gwt-user.jar" sourcepath="/home/tellesmvn/.m2/repository/com/google/gwt/gwt-user/2.0.4/gwt-user-2.0.4-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/classad-mod-2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/marbs.jar"/>
@@ -45,7 +43,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ourgrid-4.4.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="xlib/gwt-dev.jar" sourcepath="/home/tellesmvn/.m2/repository/com/google/gwt/gwt-dev/2.0.4/gwt-dev-2.0.4-sources.jar"/>
-	<classpathentry kind="lib" path="xlib/gwt-servlet.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Abmar/git/portal/xlib/gwt-user.jar" sourcepath="C:/Users/Abmar/.m2/repository/com/google/gwt/gwt-servlet/2.0.4/gwt-servlet-2.0.4-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Abmar/git/portal/xlib/gwt-dev.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

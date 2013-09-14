@@ -1,6 +1,7 @@
 package org.ourgrid.portal.client.common.gui;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.ourgrid.portal.client.OurGridPortal;
@@ -206,6 +207,8 @@ public class JobStatusPanel extends VerticalPanel {
 		    		} else {
 		    			return ICONS.aborted();
 		    		} 
+		          } else {
+		        	  ICONS.unstarted();
 		          }
 		          
 		          return null;
@@ -324,10 +327,9 @@ public class JobStatusPanel extends VerticalPanel {
 	public void updateJobStatus(JobTO newJobStatus) {
 		boolean isFinished = newJobStatus.getStatus().equalsIgnoreCase("finished");
 		
-		if(!isFinished || firstCounter == 0) {
-			updateStatusPanel(newJobStatus);
-		}
-        if (!jobIsRunning(newJobStatus.getStatus())) {
+		updateStatusPanel(newJobStatus);
+        
+		if (!jobIsRunning(newJobStatus.getStatus())) {
         	setClosable();
         	
         	if (!jobEnded) {
@@ -348,10 +350,10 @@ public class JobStatusPanel extends VerticalPanel {
 		jobListeners.add(jobListener);
 	}
 	
-	private void updateStatusPanel(JobTO newJobStatus) {
+	private void updateStatusPanel(JobTO newJobTo) {
 		
-		newJobStatus.setRelativeId(tabCount + 1);
-		newJobStatus.setName(newJobStatus.toString());
+		newJobTo.setRelativeId(tabCount + 1);
+		newJobTo.setName(newJobTo.toString());
 
 		TreeStore<AbstractTreeNodeTO> store = jobStatusTreePanel.getStore();
 
@@ -360,24 +362,30 @@ public class JobStatusPanel extends VerticalPanel {
 			oldJobTO = (JobTO) store.getModels().iterator().next();
 		}
 		
-		store.removeAll();
-		store.add(newJobStatus, true);
-		
 		if (oldJobTO == null) {
 			return;
 		}
 		
-		List<ModelData> children = newJobStatus.getChildren();
+		update(oldJobTO, newJobTo);
+		store.commitChanges();
+	}
 
-		for (ModelData modelData : children) {
-			TaskPageTO newTaskPage = (TaskPageTO) modelData;
-			TaskPageTO oldTaskPage = oldJobTO.getTaskPage(newTaskPage.getFirstTaskId());
-			if (oldTaskPage != null) {
-				newTaskPage.setExpanded(oldTaskPage.isExpanded());
-				jobStatusTreePanel.setExpanded(newTaskPage, oldTaskPage.isExpanded());
+	void update(AbstractTreeNodeTO oldTO, AbstractTreeNodeTO newTO) {
+		oldTO.setProperties(newTO.getProperties());
+		List<AbstractTreeNodeTO> orphans = new LinkedList<AbstractTreeNodeTO>();
+		for (ModelData child : newTO.getChildren()) {
+			AbstractTreeNodeTO newChild = (AbstractTreeNodeTO) child;
+			AbstractTreeNodeTO oldChild = oldTO.getChild(newChild.get(AbstractTreeNodeTO.id));
+			if (oldChild == null) {
+				orphans.add(newChild);
+			} else {
+				update(oldChild, newChild);
 			}
 		}
-		jobStatusTreePanel.setExpanded(newJobStatus, oldJobTO.isExpanded());
+		for (AbstractTreeNodeTO orphan : orphans) {
+			oldTO.add(orphan);
+		}
+		jobStatusTreePanel.refresh(oldTO);
 	}
 	
 	private boolean jobIsRunning(String state) {

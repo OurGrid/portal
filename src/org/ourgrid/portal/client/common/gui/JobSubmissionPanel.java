@@ -337,7 +337,7 @@ public class JobSubmissionPanel extends LayoutContainer {
 	protected void handleTabClosed(JobStatusPanel statusPanel) {
   		
 		statusPanel.stopStatusTimer();
-			deleteJob(statusPanel.getJobId());
+		deleteJob(statusPanel.getJobId());
   		
 		// this is made before the tab is closed, so if there's one tab, the job status is invisible
   		if (jobStatusTabPanel.getItems().size() == 1) {

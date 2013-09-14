@@ -3,6 +3,7 @@ package org.ourgrid.portal.client.common.to.model;
 import java.io.Serializable;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.extjs.gxt.ui.client.data.ModelData;
 
 public class AbstractTreeNodeTO extends BaseTreeModel implements Serializable  {
 
@@ -33,7 +34,7 @@ public class AbstractTreeNodeTO extends BaseTreeModel implements Serializable  {
 		set(AbstractTreeNodeTO.type, type);
 	}
 	
-	public void setId(Integer id) {
+	public void setId(Object id) {
 		set(AbstractTreeNodeTO.id, id);
 	}
 	
@@ -47,6 +48,16 @@ public class AbstractTreeNodeTO extends BaseTreeModel implements Serializable  {
 	
 	public String getType() {
 		return get(AbstractTreeNodeTO.type);
+	}
+	
+	public AbstractTreeNodeTO getChild(Object childId) {
+		for (ModelData child : getChildren()) {
+			AbstractTreeNodeTO nodeChild = (AbstractTreeNodeTO) child;
+			if (nodeChild.get(id).equals(childId)) {
+				return nodeChild;
+			}
+		}
+		return null;
 	}
 
 }
