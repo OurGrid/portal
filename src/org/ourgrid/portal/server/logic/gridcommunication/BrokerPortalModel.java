@@ -30,6 +30,7 @@ import org.ourgrid.portal.client.common.StateConstants;
 import org.ourgrid.portal.client.common.to.model.JobTO;
 import org.ourgrid.portal.client.common.to.model.TaskPageTO;
 import org.ourgrid.portal.server.logic.interfaces.JobStatusUpdateListener;
+import org.ourgrid.portal.server.logic.util.JobTOFactory;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 
@@ -144,8 +145,11 @@ public class BrokerPortalModel  {
 		JobTO jobTO = this.jobs.get(jobId);
 		
 		if (jobTO != null) {
-			TaskPageTO superTaskTO = jobTO.getTaskPage(offset);
-			superTaskTO.setChildren(tasksTO);
+			for (int i = 0; i < tasksTO.size(); i += JobTOFactory.TASK_PAGE_SIZE) {
+				TaskPageTO superTaskTO = jobTO.getTaskPage(i);
+				superTaskTO.setChildren(tasksTO.subList(i, 
+						Math.min(i + JobTOFactory.TASK_PAGE_SIZE, tasksTO.size())));
+			}
 		}
 	}
 

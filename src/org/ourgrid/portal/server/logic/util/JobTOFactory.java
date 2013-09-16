@@ -17,7 +17,7 @@ import org.ourgrid.portal.client.common.to.model.TaskTO;
 
 public class JobTOFactory {
 
-	private static final Integer TASK_PAGE_SIZE = 10;
+	public static final Integer TASK_PAGE_SIZE = 10;
 	
 	private static Integer num_processes;
 	private static Integer num_unstarted_tasks;

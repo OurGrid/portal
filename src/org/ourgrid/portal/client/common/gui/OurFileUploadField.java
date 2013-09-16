@@ -23,8 +23,9 @@ public class OurFileUploadField extends FileUpload {
 	
 	public void onBrowserEvent(Event event) {
 
-		for (OurFileUploadEventListener listener : listeners)
+		for (OurFileUploadEventListener listener : listeners) {
 			listener.onEvent(event);
+		}
 
 		super.onBrowserEvent(event);
 		
