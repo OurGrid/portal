@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.data.TreeModelReader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -366,11 +367,10 @@ public class JobStatusPanel extends VerticalPanel {
 			return;
 		}
 		
-		update(oldJobTO, newJobTo);
-		store.commitChanges();
+		update(oldJobTO, newJobTo, store);
 	}
 
-	void update(AbstractTreeNodeTO oldTO, AbstractTreeNodeTO newTO) {
+	void update(AbstractTreeNodeTO oldTO, AbstractTreeNodeTO newTO, TreeStore<AbstractTreeNodeTO> store) {
 		oldTO.setProperties(newTO.getProperties());
 		List<AbstractTreeNodeTO> orphans = new LinkedList<AbstractTreeNodeTO>();
 		for (ModelData child : newTO.getChildren()) {
@@ -379,13 +379,15 @@ public class JobStatusPanel extends VerticalPanel {
 			if (oldChild == null) {
 				orphans.add(newChild);
 			} else {
-				update(oldChild, newChild);
+				update(oldChild, newChild, store);
 			}
 		}
 		for (AbstractTreeNodeTO orphan : orphans) {
 			oldTO.add(orphan);
+			store.add(oldTO, orphan, true);
 		}
 		jobStatusTreePanel.refresh(oldTO);
+		store.update(oldTO);
 	}
 	
 	private boolean jobIsRunning(String state) {
