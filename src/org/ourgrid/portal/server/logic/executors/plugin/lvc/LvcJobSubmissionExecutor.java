@@ -19,7 +19,6 @@ import org.ourgrid.common.specification.job.IOBlock;
 import org.ourgrid.common.specification.job.IOEntry;
 import org.ourgrid.common.specification.job.JobSpecification;
 import org.ourgrid.common.specification.job.TaskSpecification;
-import org.ourgrid.portal.client.OurGridPortal;
 import org.ourgrid.portal.client.common.to.response.ResponseTO;
 import org.ourgrid.portal.client.common.to.service.ServiceTO;
 import org.ourgrid.portal.client.plugin.lvc.gui.model.LvcJobRequest;
@@ -28,10 +27,8 @@ import org.ourgrid.portal.client.plugin.lvc.to.service.LvcJobSubmissionTO;
 import org.ourgrid.portal.server.exceptions.ExecutionException;
 import org.ourgrid.portal.server.logic.executors.JobSubmissionExecutor;
 import org.ourgrid.portal.server.logic.interfaces.OurGridPortalIF;
-import org.ourgrid.portal.server.logic.model.DAOManager;
 import org.ourgrid.portal.server.messages.OurGridPortalServiceMessages;
 import org.ourgrid.portal.server.util.OurgridPortalProperties;
-import org.ourgrid.portal.server.logic.executors.plugin.lvc.LvcJobImageJoiner;
 
 public class LvcJobSubmissionExecutor extends JobSubmissionExecutor {
 
@@ -61,7 +58,6 @@ public class LvcJobSubmissionExecutor extends JobSubmissionExecutor {
 		if(dir.exists()){
 			for(String file : dir.list()){
 				if(file.toLowerCase().endsWith(".jpg") 
-						|| file.toLowerCase().endsWith(".gif") 
 						|| file.toLowerCase().endsWith(".png")){
 					imageFilePath = filesPath+System.getProperty("file.separator")+file;
 				}
@@ -142,7 +138,7 @@ public class LvcJobSubmissionExecutor extends JobSubmissionExecutor {
 		
 		String resourcesDir = OurgridPortalProperties.getInstance().getProperty(OurgridPortalProperties.LVC_PATH);
 		
-		for(String filename : filenames){
+		for(String filename : filenames) {
 			String inputFilename = outputDir + File.separator + "input" + File.separator + filename;
 			//create initBlock
 			IOBlock initBlock = new IOBlock();
@@ -150,18 +146,15 @@ public class LvcJobSubmissionExecutor extends JobSubmissionExecutor {
 			IOEntry initEntry = new IOEntry("put", inputFilename, filename);
 			initBlock.putEntry(initEntry);
 			
-			IOEntry initEntryIM = new IOEntry("put", resourcesDir+ File.separator +"ImageMagick-6.7.6-5.tar.gz", "ImageMagick-6.7.6-5.tar.gz");
+			IOEntry initEntryIM = new IOEntry("put", resourcesDir + File.separator + "mogrify", "mogrify");
 			initBlock.putEntry(initEntryIM);
 			
-			IOEntry initEntryScriptIM = new IOEntry("put", resourcesDir+ File.separator +"ImageMagickSetup.sh", "ImageMagickSetup.sh");
-			initBlock.putEntry(initEntryScriptIM);
-			
-			String remoteExe = "tar xvzf ImageMagick-6.7.6-5.tar.gz; bash ImageMagickSetup.sh " + filename + ";"+ LINE_SEPARATOR;
+			String remoteExe = "chmod +x mogrify; ./mogrify -paint 20 " + filename + ";"+ LINE_SEPARATOR;
 			
 			//create finalBlock
 			IOBlock finalBlock = new IOBlock();
 			
-			IOEntry finalEntryMogrify = new IOEntry("get",filename, outputDir + File.separator + filename );
+			IOEntry finalEntryMogrify = new IOEntry("get", filename, outputDir + File.separator + filename);
 			finalBlock.putEntry(finalEntryMogrify);
 
 			TaskSpecification taskSpec = new TaskSpecification(initBlock, remoteExe, finalBlock, null);
